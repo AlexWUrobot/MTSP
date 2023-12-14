@@ -9,5 +9,5 @@
 
 
 
-3. “plot_replan_battery_lives4_0”
-4. 
+3. â€œplot_replan_battery_lives4_0â€ to plot battery situation
+
