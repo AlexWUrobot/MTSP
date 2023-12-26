@@ -194,7 +194,7 @@ increaseFactor = 10;
 % Call the function to increase the weights of the specified node connections
 % [s, t, weight] = increase_weights(s, t, weight, nodesToSelected, increaseFactor);
 
-points_to_remove = [6 4; 6 5; 6 6; 6 7; 7 4; 7 5; 7 6; 8 5; 8 6; 9 5; 10 5]; % island
+points_to_remove = [6 4; 6 5; 6 6; 6 7; 7 4; 7 5; 7 6; 8 5; 8 6;]; % island
 remove_node_arr = (points_to_remove(:,2)-1)*14+points_to_remove(:,1);% (y-1)*14+x = nth 
 
 for i = 1:length(remove_node_arr)
@@ -235,14 +235,15 @@ hold on
 % highlight(p,path1,'EdgeColor','g')
 
 
-start_p = [6 5];
-end_p = [11 9];
+start_p = [8 1];
+end_p = [8 1];
 start_p_indx = start_p(1)+(start_p(2)-1)*14;
 end_p_indx = end_p(1)+(end_p(2)-1)*14;
-% G = graph(s,t,weight);
-% p = plot(G,'XData',x,'YData',y,'EdgeLabel',G.Edges.Weight);
-% [path1,d] = shortestpath(G,start_p_indx,end_p_indx)
-% highlight(p,path1,'EdgeColor','g','LineWidth',3)
+
+G = graph(s,t,weight);
+p = plot(G,'XData',x,'YData',y,'EdgeLabel',G.Edges.Weight);
+[path1,d] = shortestpath(G,start_p_indx,end_p_indx)
+highlight(p,path1,'EdgeColor','g','LineWidth',3)
 
 scatter(8,0,'MarkerFaceColor','r')
 hold on
@@ -271,7 +272,7 @@ p = plot(G,'XData',x,'YData',y,'EdgeLabel',G.Edges.Weight);
 % Loop over nodes
 for i = 1:196
     % Find the shortest path
-    [path1, d] = shortestpath(G, i, 197);
+    [path1, d] = shortestpath(G, i, 2);
     
     % Clear the previous highlight color
     %highlight(p, 'off');
