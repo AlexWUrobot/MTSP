@@ -137,12 +137,16 @@ userConfig.break1 = break1;
 userConfig.asv1_xy = asv1_xy;
 userConfig.asv2_xy = asv2_xy;
 
+% Create a struct C with fields 'data' to store matrices A and B
+asv_xy(1).data = asv1_xy;
+asv_xy(2).data = asv2_xy;
 %% Run GA function
 if 1 % "1" for single run, "0" for multiple runs using parallel computing
-    a = ga4_0_drone_CPP(userConfig); % use instant charge and speed limit constraint
+    a = ga4_1_drone_CPP(userConfig); % use instant charge and speed limit constraint
     Run_time = toc/60
     % Evaluate of the trajectories and get the timeline and plot
-    [traj_segment,time_given_charger] = preplan_plot4_0_drone_CPP(a,userConfig.numTarChargers,userConfig,start_point,start_pCharger);
+    %[traj_segment,time_given_charger] = preplan_plot4_0_drone_CPP(a,userConfig.numTarChargers,userConfig,start_point,start_pCharger);
+    [traj_segment,time_given_charger] = preplan_plot4_1_drone_CPP(a,userConfig.numTarChargers,userConfig,start_point,start_pCharger, asv_xy);
     disp(a.charger_travel_time);
     a.time_given_charger;
     a.minTime;
@@ -182,5 +186,6 @@ else
 
     [~,temp_I] = min(mission_time_M);
     a = aM{temp_I};
-    [traj_segment,time_given_charger] = preplan_plot4_0(a,userConfig.numTarChargers,userConfig,start_point,start_pCharger);
+    %[traj_segment,time_given_charger] = preplan_plot4_0(a,userConfig.numTarChargers,userConfig,start_point,start_pCharger);
+    [traj_segment,time_given_charger] = preplan_plot4_1(a,userConfig.numTarChargers,userConfig,start_point,start_pCharger, asv_xy);
 end
