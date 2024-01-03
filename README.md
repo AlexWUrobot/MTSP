@@ -1,15 +1,7 @@
 1. run "preplan_GA" for single run and multiple runs
-
-
-
-
-
 2. "failure_re_plan4_0" for failure replan and figure
-
-
-
-
 3. “plot_replan_battery_lives4_0” to plot battery situation
+4. 
 ----------------------------------------------------
 Obstacle avoidance
 1. "preplan_GA_boundary_drone"
@@ -24,3 +16,9 @@ UAV planning
 2. "ga4_1_drone_cpp"
 3. "preplan_plot4_1_drone_cpp"
 
+----------------------------------------------------
+UAV planning, UAV battery life is 0.4 hour
+1. "preplan_GA_drone4_3"
+2. "ga4_3_drone_cpp"
+3. "preplan_plot4_3_drone_cpp"
+4. "test_plot_uav_4_3 " is to plot schedule
