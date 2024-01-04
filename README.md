@@ -24,8 +24,9 @@ UAV planning, UAV battery life is 0.4 hour
 4. "test_plot_uav_4_3 " is to plot schedule
 
 ----------------------------------------------------
-AUV and ASV planning, 
+AUV and ASV planning
 1. "preplan_GA_boundary_drone_5_0"
 2. "ga5_0"
 3. "preplan_plot5_0"
-4. "plot_battery_v9 " is to plot schedule
+4. "plot_battery_v10 " is to plot schedule and save asv travel time
+
