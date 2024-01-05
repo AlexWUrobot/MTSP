@@ -262,8 +262,7 @@ for i = 1:length(scheduled_ind)
         
         % how to update the interval again after i 
         
-        for w = i+1 :length(interval)  % 4~6  only the consider the rest time
-            
+        for w = i+1 :length(interval)  % 4~6  only the consider the rest time           
             value_to_find = scheduled_nth_charger(w);  %  1     2     1     2     1     2
             % Find the indices of the same value before the w th element
             indices = find(scheduled_nth_charger(1:w-1) == value_to_find);
