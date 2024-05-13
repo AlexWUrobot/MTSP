@@ -1,8 +1,8 @@
 Stage1 AUV planning
 1.  "stage1_auv"               includes the below codes and save "auv_mobile_charger_yyyy-mm-dd_HHMMSS.mat"
-1.1 "stage1_auv_planner"       is to run the GA
-1.2 "stage1_auv_plot_path"     is to plot the AUV-USV path
-2.  "stage1_auv_plot_battery " is to plot the AUV-USV batteru schedule and save "asv_travel.mat"
+2.  "stage1_auv_planner"       is to run the GA
+3.  "stage1_auv_plot_path"     is to plot the AUV-USV path
+4.  "stage1_auv_plot_battery " is to plot the AUV-USV batteru schedule and save "asv_travel.mat"
 
 To run the record data: 
     1. Read the previous data, press F9 in line 327 of "stage1_auv" 
