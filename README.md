@@ -1,32 +1,29 @@
-1. run "preplan_GA" for single run and multiple runs
-2. "failure_re_plan4_0" for failure replan and figure
-3. “plot_replan_battery_lives4_0” to plot battery situation
+Stage1 AUV planning
+1.  "stage1_auv"               includes the below codes and save "auv_mobile_charger_yyyy-mm-dd_HHMMSS.mat"
+--> "stage1_auv_planner"       is to run the GA
+--> "stage1_auv_plot_path"     is to plot the AUV-USV path
+2.  "stage1_auv_plot_battery " is to plot the AUV-USV batteru schedule and save "asv_travel.mat"
+
+To run the record data: 
+    1. Read the previous data, press F9 in line 327 of "stage1_auv" 
+       --> load('auv_mobile_charger_2024-01-17_162755.mat');
+    2. Plot the AUV-USV path, press F9 in line 332 of "stage1_auv" 
+       --> [traj_segment,time_given_charger, traj_worker_nth] = stage1_auv_plot_path(a,userConfig.numTarChargers,userConfig,start_point,start_pCharger,G,start_node_th,points_to_remove);
+    3. Run "stage1_auv_plot_battery " is to plot the AUV-USV batteru schedule 
 
 ----------------------------------------------------
-Obstacle avoidance
-1. "preplan_GA_boundary_drone"
-2. "ga4_0"
-3. "preplan_plot5_0"
-4. "plot_battery_v8"
+
+Stage2 UAV planning, UAV battery life is 0.4 hour
+1.  "stage2_uav"               includes the below codes and save "uav_time_sequence_charging_yyyy-mm-dd_HHMMSS.mat"
+--> "stage2_uav_planner"       is to run the GA
+--> "stage2_uav_plot_path"     is to plot the UAV-USV path 
+4.  "stage2_uav_plot_battery " is to plot the UAV-USV battery schedule
 
 
-----------------------------------------------------
-UAV planning
-1. "preplan_GA_drone_CPP_known_charging"
-2. "ga4_1_drone_cpp"
-3. "preplan_plot4_1_drone_cpp"
-
-----------------------------------------------------
-UAV planning, UAV battery life is 0.4 hour
-1. "preplan_GA_drone4_3"
-2. "ga4_3_drone_cpp"
-3. "preplan_plot4_3_drone_cpp"
-4. "test_plot_uav_4_3 " is to plot schedule
-
-----------------------------------------------------
-AUV and ASV planning
-1. "preplan_GA_boundary_drone_5_0"
-2. "ga5_0"
-3. "preplan_plot5_0"
-4. "plot_battery_v10 " is to plot schedule and save asv travel time
-
+To run the record data: 
+    1. Read the previous data, press F9 in line 229~230 of "stage2_uav" 
+       --> load('uav_time_sequence_charging_2024-01-20_051116');
+       --> load('asv_travel.mat');
+    2. Plot the UAV-USV path, press F9 in line 236 of "stage2_uav" 
+       --> [traj_segment] = stage2_uav_plot_path(a,userConfig.numTarChargers,userConfig,start_point,start_pCharger, asv_xy);
+    3. Run "stage2_uav_plot_battery " is to plot the UAV-USV battery schedule
