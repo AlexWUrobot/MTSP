@@ -15,7 +15,7 @@ The mission utilizes UAVs with two distinct flight modes: Work mode and Travel m
 Our goal is to minimize the overall mission time and return distance for charging by the Algorithm 2. The mission involves three UAVs covering the same square area. The previous USV rendezvous points serve as time-sequence charger stations, marked by green and orange crosses. The black crosses indicate interruption points where AUVs need to return for charging.
 
 <p align="center">
-  <img src="https://github.com/AlexWUrobot/MTSP/blob/main/Algorithm2_v2.PNG"  width="200" height="auto" alt="GA UAV Time-Sequence Charging">
+  <img src="https://github.com/AlexWUrobot/MTSP/blob/main/Algorithm2_v2.PNG"  width="480" height="auto" alt="GA UAV Time-Sequence Charging">
   <br>
   <em> Algorithm 2. GA UAV Time-Sequence Charging</em>
 </p>
