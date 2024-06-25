@@ -1,3 +1,15 @@
+# AUV-USV Mobile Charging
+
+The mission employs AUVs capable of reaching a maximum speed of 3 km/h for 12 hours, incorporating a safety margin of 2 hours. USVs, on the other hand, are bound by a speed limit of 16 km/h, and each rendezvous necessitates an 8-hour battery charging process. Our objective is to minimize the overall mission time, and optimized trajectories of AUVs and USVs through Algorithm~\ref{alg:stage_1}.
+
+<p align="center">
+  <img src="https://github.com/AlexWUrobot/Heterogeneous-Multi-Robot-Planning/blob/main/Algorithm1.PNG" alt="Dijkstra-GA AUV Mobile Charging">
+  <br>
+  <em> Algorithm 1. Dijkstra-GA AUV Mobile Charging</em>
+</p>
+
+# How to Run the Code
+
 Stage1 AUV planning
 1.  "stage1_auv"               includes the below codes and save "auv_mobile_charger_yyyy-mm-dd_HHMMSS.mat"
 -   "stage1_auv_planner"       is to run the GA
