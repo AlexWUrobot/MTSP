@@ -1,12 +1,27 @@
 # AUV-USV Mobile Charging
 
-The mission employs AUVs capable of reaching a maximum speed of 3 km/h for 12 hours, incorporating a safety margin of 2 hours. USVs, on the other hand, are bound by a speed limit of 16 km/h, and each rendezvous necessitates an 8-hour battery charging process. Our objective is to minimize the overall mission time, and optimized trajectories of AUVs and USVs through Algorithm~\ref{alg:stage_1}.
+The mission employs AUVs capable of reaching a maximum speed of 3 km/h for 12 hours, incorporating a safety margin of 2 hours. USVs, on the other hand, are bound by a speed limit of 16 km/h, and each rendezvous necessitates an 8-hour battery charging process. Our objective is to minimize the overall mission time, and optimized trajectories of AUVs and USVs through Algorithm 1.
 
 <p align="center">
   <img src="https://github.com/AlexWUrobot/MTSP/blob/main/Algorithm1.PNG" alt="Dijkstra-GA AUV Mobile Charging">
   <br>
   <em> Algorithm 1. Dijkstra-GA AUV Mobile Charging</em>
 </p>
+
+# UAV-USV Time-Sequence Charging
+
+The mission utilizes UAVs with two distinct flight modes: Work mode and Travel mode. During the Work mode, the UAV explores the area at a speed of 20 km/h, while in Travel mode, it flies to the start point or charging stations at a speed of 60 km/h. Each flight is limited to a maximum of 0.7 hours to ensure it doesn't exceed the battery capacity. After 0.5 hours of work, the drone heads to the charging stations. Each USV can charge a maximum of two UAVs simultaneously, and the charging process takes 2 hours.
+
+Our goal is to minimize the overall mission time and return distance for charging by the Algorithm 2. The mission involves three UAVs covering the same square area. The previous USV rendezvous points serve as time-sequence charger stations, marked by green and orange crosses. The black crosses indicate interruption points where AUVs need to return for charging.
+
+<p align="center">
+  <img src="https://github.com/AlexWUrobot/MTSP/blob/main/Algorithm2.PNG" alt="GA UAV Time-Sequence Charging">
+  <br>
+  <em> Algorithm 2. GA UAV Time-Sequence Charging</em>
+</p>
+
+
+
 
 # How to Run the Code
 
