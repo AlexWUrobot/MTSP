@@ -26,7 +26,7 @@ Our goal is to minimize the overall mission time and return distance for chargin
 # How to Run the Code
 
 Stage1 AUV planning
-1.  "stage1_auv"               includes the below codes and save "auv_mobile_charger_yyyy-mm-dd_HHMMSS.mat"
+1. "stage1_auv"  includes the below codes and save "auv_mobile_charger_yyyy-mm-dd_HHMMSS.mat"
    - "stage1_auv_planner"       is to run the GA
    - "stage1_auv_plot_path"     is to plot the AUV-USV path
 2.  "stage1_auv_plot_battery " is to plot the AUV-USV batteru schedule and save "asv_travel.mat"
