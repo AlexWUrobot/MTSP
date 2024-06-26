@@ -41,10 +41,10 @@ To run the record data:
 ----------------------------------------------------
 
 Stage2 UAV planning, UAV battery life is 0.4 hour
-1.  "stage2_uav"               includes the below codes and save "uav_time_sequence_charging_yyyy-mm-dd_HHMMSS.mat"
+1. "stage2_uav"               includes the below codes and save "uav_time_sequence_charging_yyyy-mm-dd_HHMMSS.mat"
    - "stage2_uav_planner"       is to run the GA
    - "stage2_uav_plot_path"     is to plot the UAV-USV path 
-2.  "stage2_uav_plot_battery " is to plot the UAV-USV battery schedule
+2. "stage2_uav_plot_battery " is to plot the UAV-USV battery schedule
 
 
 To run the record data: 
