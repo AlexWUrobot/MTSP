@@ -273,17 +273,14 @@ for j = 1:1:length(nth_auv)
     %xy_2 = [ended_time nth_auv];
     %line = [xy_1;xy_2];  
     %plot(line(:,1),line(:,2),'linewidth',5,'Color',black); 
-
-    % Extract x and y coordinates
-    x_coords = [arrived_time(j), ended_time(j)];
-    y_coords = [nth_auv(j), nth_auv(j)];
-
+    xy_start = [arrived_time(j); nth_auv(j)];
+    xy_end = [ended_time(j); nth_auv(j)];
     
-    if j == 1 % only print 1 legend
-        plot(x_coords,y_coords,'linewidth',5,'Color',black);
-    else
-        plot(x_coords,y_coords,'linewidth',5,'Color',black,'HandleVisibility','off');
-    end
+    % Extract x and y coordinates
+    x_coords = [xy_start(1), xy_end(1)];
+    y_coords = [xy_start(2), xy_end(2)];
+
+    plot(x_coords,y_coords,'linewidth',5,'Color',black); 
     hold on;
 end
 
@@ -303,7 +300,7 @@ scheduled_interval = interval(scheduled_ind)
 
 
 %% automatically adjust the traj_segments to workers time
-every_worker_jobs_amount =[];
+every_worker_jobs_amount =[]
 for k = 1:numWorker
     every_worker_jobs_amount = [every_worker_jobs_amount, sum(traj_worker_nth == k)];
 end
@@ -452,12 +449,7 @@ end
 %         hold on;        
 %     end
 % end    
-
-if numCharger == 1
-    legend('UUV#1 exploring','UUV#2 exploring','UUV#3 exploring','waiting','UAS#1 communicatting')
-else
-    legend('UUV#1 exploring','UUV#2 exploring','UUV#3 exploring','waiting','UAS#1 communicatting','UAS#2 communicatting')
-end
+legend('UUV#1 exploring','UUV#2 exploring','UUV#3 exploring','waiting','UAS#1 communicatting','UAS#2 communicatting')
 % , 'HandleVisibility','off'
 
 
