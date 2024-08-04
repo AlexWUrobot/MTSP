@@ -1,4 +1,4 @@
-function [traj_segment,time_given_charger, traj_worker_nth] = stage1_auv_plot_path_iterated(a,numTarChargers,userConfig,start_point,start_pCharger,G,start_node_th,points_to_remove)
+function [traj_segment,time_given_charger, traj_worker_nth] = stage1_auv_plot_path_charger_dijkstra(a,numTarChargers,userConfig,start_point,start_pCharger,G,start_node_th,points_to_remove)
 %% Plot
 N = length(a.optRoute);
 rng = [[1 a.optBreak+1];[a.optBreak N]]';
@@ -187,7 +187,7 @@ count_p = 1;
 
 %plot([0.5,14.5,14.5,0.5,.5],[0.5,.5,14.5,14.5,.5],'k','LineWidth',3)  
 brown = [171 104 87]./255;
-plot([0.5,14.5,14.5,0.5,.5],[0.5,.5,2.5,2.5,.5],'Color',brown,'LineWidth',2) % shore stations covering border
+plot([0.5,14.5,14.5,0.5,.5],[0.5,.5,1.5,1.5,.5],'Color',brown,'LineWidth',2) % shore stations covering border
 
 % for ic = 1:numTarChargers
 %     for id = 1:NUm(ic)
@@ -204,50 +204,50 @@ for ic = 1:numTarChargers
     charger_path_y = [start_pCharger(ic,2); a.xy(a.charging_location(charger_location_ind(ic,1):charger_location_ind(ic,2)),2)];
     
     %% dijkstra algorithm for chargers, if charger is boat and need to ocnsider island
-%     new_path_x = []; % dijkstra algorithm
-%     new_path_y = [];
-% 
-%     for i = 1:length(charger_path_x)-1 % will add one for the end point
-%         charger_x = charger_path_x(i);  % for the start point
-%         charger_y = charger_path_y(i);
-%         charger_x2 = charger_path_x(i+1); % for the end point
-%         charger_y2 = charger_path_y(i+1); 
-%         
-%         % if start point the nth_node is 197 or the length of the a.dmat+1
-%         if i == 1
-%            nth_node = start_node_th; % 196+1 = 197
-%            jth_node = (charger_y2-1)*14+charger_x2;% (y-1)*14+x = jth 
-%         else
-%            nth_node = (charger_y-1)*14+charger_x;% (y-1)*14+x = nth 
-%            jth_node = (charger_y2-1)*14+charger_x2;% (y-1)*14+x = jth 
-%         end
-%         
-%         % Find the shortest path (include the start point and end point)
-%         % if start and end point are same, it will output 1 point
-%         [path1, ~] = shortestpath(G, nth_node, jth_node);  
-%         
-%         % always cut the end point expect the last point
-%         if i == 1  % the first point need to consider first point
-%            start_indx = 1;
-%         else
-%            start_indx = 2;
-%         end
-%         
-%         % tansform the node label to the x y position and insert back to
-%         % the new path_x and new path_y
-%         for j = start_indx : length(path1)
-%             nth_node = path1(j);
-%             if nth_node == start_node_th % if the node is the start point, just use x y
-%                 nth_node_x = start_point(s,1);
-%                 nth_node_y = start_point(s,2);
-%             else  % other point need to transfer to x y
-%                 nth_node_x = mod(nth_node - 1, 14) + 1; % Find the remainder after division
-%                 nth_node_y = floor((nth_node - 1) / 14) + 1; 
-%             end
-%             new_path_x = [new_path_x;nth_node_x];
-%             new_path_y = [new_path_y;nth_node_y];
-%         end      
-%     end    
+    new_path_x = []; % dijkstra algorithm
+    new_path_y = [];
+
+    for i = 1:length(charger_path_x)-1 % will add one for the end point
+        charger_x = charger_path_x(i);  % for the start point
+        charger_y = charger_path_y(i);
+        charger_x2 = charger_path_x(i+1); % for the end point
+        charger_y2 = charger_path_y(i+1); 
+        
+        % if start point the nth_node is 197 or the length of the a.dmat+1
+        if i == 1
+           nth_node = start_node_th; % 196+1 = 197
+           jth_node = (charger_y2-1)*14+charger_x2;% (y-1)*14+x = jth 
+        else
+           nth_node = (charger_y-1)*14+charger_x;% (y-1)*14+x = nth 
+           jth_node = (charger_y2-1)*14+charger_x2;% (y-1)*14+x = jth 
+        end
+        
+        % Find the shortest path (include the start point and end point)
+        % if start and end point are same, it will output 1 point
+        [path1, ~] = shortestpath(G, nth_node, jth_node);  
+        
+        % always cut the end point expect the last point
+        if i == 1  % the first point need to consider first point
+           start_indx = 1;
+        else
+           start_indx = 2;
+        end
+        
+        % tansform the node label to the x y position and insert back to
+        % the new path_x and new path_y
+        for j = start_indx : length(path1)
+            nth_node = path1(j);
+            if nth_node == start_node_th % if the node is the start point, just use x y
+                nth_node_x = start_point(s,1);
+                nth_node_y = start_point(s,2);
+            else  % other point need to transfer to x y
+                nth_node_x = mod(nth_node - 1, 14) + 1; % Find the remainder after division
+                nth_node_y = floor((nth_node - 1) / 14) + 1; 
+            end
+            new_path_x = [new_path_x;nth_node_x];
+            new_path_y = [new_path_y;nth_node_y];
+        end      
+    end    
     %%
     plot(charger_path_x, charger_path_y,'linestyle','none','marker','x','LineWidth',2,'MarkerSize',15,'Color',clr(s+ic,:)) 
     
@@ -257,13 +257,10 @@ for ic = 1:numTarChargers
     
     for idx_c = 2:length(charger_path_x) % remove the start point  2 3 4
         %text(charger_path_x(idx_c), charger_path_y(idx_c), labels{idx_c-1}, 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
-        %text(charger_path_x(idx_c), charger_path_y(idx_c), num2str(idx_c-1), 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
-        quotient = ceil((idx_c-1)/a.nSalesmen); % number of workers
-        text(charger_path_x(idx_c), charger_path_y(idx_c), [num2str(idx_c-1) ', j=' num2str(quotient)], 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
+        text(charger_path_x(idx_c), charger_path_y(idx_c), num2str(idx_c-1), 'VerticalAlignment', 'bottom', 'HorizontalAlignment', 'right');
     end
 
-%    plot(new_path_x, new_path_y,':','LineWidth',2,'MarkerSize',15,'Color',clr(s+ic,:),'HandleVisibility','off')  % dijkstra algorithm for chargers, if charger is boat and need to ocnsider island
-    plot(charger_path_x, charger_path_y,':','LineWidth',2,'MarkerSize',15,'Color',clr(s+ic,:),'HandleVisibility','off') 
+    plot(new_path_x, new_path_y,':','LineWidth',2,'MarkerSize',15,'Color',clr(s+ic,:),'HandleVisibility','off') 
     
 %     plot([start_pCharger(1,1); a.xy(a.charging_location(charger_location_ind(ic,1):charger_location_ind(ic,2)),1)], ... 
 %          [start_pCharger(1,2); a.xy(a.charging_location(charger_location_ind(ic,1):charger_location_ind(ic,2)),2)],':x','LineWidth',2,'MarkerSize',15,'Color',clr(s+ic,:)) 

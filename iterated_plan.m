@@ -42,14 +42,12 @@ end
 %% Speed and mission specifications
 scala = 1; % scale based on mission area resolution
 v = 3/scala; % worker speed   3km/hr with 2hr safety level
-vc = 16/scala; % 2/scala; % charger speed  16km/hr
-numCharger = 2; %2; % number of charger
+vc = 45/scala; % 16/scala; % charger speed  16km/hr
+numCharger = 1; %2; % number of charger
 numWorker = 3; % number of worker
-btl = 10; % battery life  max 12 hr battery 
-charging_period = 8; % 3; % charging period hr 
+btl = 5; %10; % battery life  max 12 hr battery 
+charging_period = 0.1; %0.5; % 8; % charging period hr,  communication time 
 
-vd = 3/scala; % worker speed, drone.
-numDrone = 3;
 
 %% Add start point
 start_point = [8,0;8,0;8,0;8,0]; % x and y locations of start points of workers
@@ -198,7 +196,7 @@ G = graph(s,t,weight);
 p = plot(G,'XData',x,'YData',y,'EdgeLabel',G.Edges.Weight);
 
 
-%% boundary II : start_mat
+%% boundary II : start_mat  % dijkstra's algorithm if worker and chargers consider obstacles
 % Update distance to start point 196 x 6    3 working robot (dist v) (dist v) (dist v)
 for start_i = 1:numWorker
     for is = 1: length(map.mission_location) %196
@@ -219,16 +217,16 @@ for start_i = 1:numWorker
     end
 end
 
-% Update charger initial positions
-for start_i = 1: numCharger
-    for is = 1: length(map.mission_location)
-        %start_mat(is,2*numWorker+start_i) = norm([map.mission_location(is,:)-start_pCharger(start_i,:)]); % 196 point to the start point distance
-        nth_node = (map.mission_location(is,2)-1)*14+map.mission_location(is,1);% (y-1)*14+x = nth 
-        % Find the shortest path
-        [path1, d] = shortestpath(G, nth_node, 197);   
-        start_mat(is,2*numWorker+start_i) = d;
-    end
-end
+% % Update charger initial positions, if charger (boat) consider obstalces 
+% for start_i = 1: numCharger
+%     for is = 1: length(map.mission_location)
+%         %start_mat(is,2*numWorker+start_i) = norm([map.mission_location(is,:)-start_pCharger(start_i,:)]); % 196 point to the start point distance
+%         nth_node = (map.mission_location(is,2)-1)*14+map.mission_location(is,1);% (y-1)*14+x = nth 
+%         % Find the shortest path
+%         [path1, d] = shortestpath(G, nth_node, 197);   
+%         start_mat(is,2*numWorker+start_i) = d;
+%     end
+% end
 
 %% boundary III : dmat 196x196 or 187x187
 numPoints = length(map.mission_location)
@@ -253,19 +251,19 @@ for i = 1:numPoints  % 1~187
         distanceMatrix(j, i) = d;
     end
 end
-userConfig.dmat = distanceMatrix;
+userConfig.dmat = distanceMatrix;  % workes consider obstacle 
 %% GA parameters
 userConfig.xy = map.mission_location;              % mission area
 userConfig.minTour=floor(size(userConfig.xy,1)/1); % Assume all the vehicle will travel the similar distance.
 userConfig.popSize=400*2;                          % population size
-userConfig.numIter = 400*2;                        % number of max iteration
+userConfig.numIter = 100;    %400*2;               % number of max iteration 2024 Aug. 3th
 % userConfig.numIter = 1;                          % number of max iteration
 userConfig.nSalesmen= numWorker;                   % number of worker
 userConfig.numTarChargers = numCharger;            % number of charger
 userConfig.batteryLife = btl;
 userConfig.initial_battery_level = btl;   % 100% energy
 userConfig.charging_time = charging_period;
-userConfig.start_mat = start_mat;
+userConfig.start_mat = start_mat; % workes consider obstacle 
 % speed
 userConfig.delta_v = v;
 userConfig.delta_vc = vc;
@@ -300,7 +298,7 @@ if 1 % "1" for single run, "0" for multiple runs using parallel computing
         %a = ga5_0(userConfig); % use instant charge and speed limit constraint
         %a = ga6_0(userConfig); % 2024 Feb 12
         % a = stage1_auv_planner(userConfig); % 2024 May 13
-        a = stage1_auv_planner_iterated(userConfig); % 2024 Aug 2
+        a = stage1_auv_planner_iterated(userConfig); % 2024 Aug 2,  UAS with obstacle avoidance ability
         Run_time = toc/60
         record_max_mission_time(i) = max(a.minTime);  
         record_max_distance(i) = a.minDist; % working robot distance
@@ -333,7 +331,11 @@ if 1 % "1" for single run, "0" for multiple runs using parallel computing
     % Evaluate of the trajectories and get the timeline and plot
     % [traj_segment,time_given_charger, traj_worker_nth] = preplan_plot5_0(a,userConfig.numTarChargers,userConfig,start_point,start_pCharger,G,start_node_th,points_to_remove);
     % [traj_segment,time_given_charger, traj_worker_nth] = stage1_auv_plot_path(a,userConfig.numTarChargers,userConfig,start_point,start_pCharger,G,start_node_th,points_to_remove);
+    
+    %                                                    stage1_auv_plot_path_charger_dijkstra, if charger is boat and need to ocnsider island
     [traj_segment,time_given_charger, traj_worker_nth] = stage1_auv_plot_path_iterated(a,userConfig.numTarChargers,userConfig,start_point,start_pCharger,G,start_node_th,points_to_remove);
+    
+    
     %[traj_segment,time_given_charger] = preplan_plot4_0(a,userConfig.numTarChargers,userConfig,start_point,start_pCharger);
     
     
