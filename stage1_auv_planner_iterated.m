@@ -64,6 +64,8 @@ numTarChargers = configStruct.numTarChargers;
 pp_time = configStruct.pp_time;
 % priority = configStruct.priority;
 charging_window = configStruct.charging_window;
+
+shore_station_boundary_y = userConfig.shore_station_boundary_y;   % lifan added
 if isempty(dmat)
     nPoints = size(xy,1);
     a = meshgrid(1:nPoints);
@@ -113,6 +115,8 @@ charging_time_end = cell(popSize,1);
 time_given_charger = cell(popSize,1);
 nth_worker_record = cell(popSize,1); % lifan added
 charger_location_ind_record = cell(popSize,1); % lifan added
+list_num_charger_near_shore = cell(popSize,1); % lifan added
+
 
 % popRoute(1,:) = (1:n);
 % breakl = cumsum(ones(1,nSalesmen-1)*floor(n/nSalesmen));
@@ -168,8 +172,9 @@ end
 for iter = 1:numIter
     % Evaluate Members of the Population
     fun = zeros(1,popSize);
-    speed_limit_penalty =zeros(1,popSize);
+    speed_limit_penalty = zeros(1,popSize);
     numStations = zeros(1,popSize);
+    
         
     for p = 1:popSize
         % define the chromosome
@@ -225,21 +230,23 @@ for iter = 1:numIter
         
         %% add charging period of time to the shorest travel time robots
         % find how many workers need to deploy late
-        if nSalesmen > numTarChargers
-            numLateDeploy = nSalesmen - numTarChargers;
-            % sort the mission time
-            [~,idx_late] = sort(mission_time,2);
-            idx_late = idx_late(1:numLateDeploy);
-            % change time start and finish charging
-            temp = cumsum(man_battery_count);
-            
-            bi = [[1 temp(1:end-1)+1]' temp'];
-            for il = 1:numLateDeploy
-                
-                time_start_charging(bi(idx_late(il),1):bi(idx_late(il),2)) = time_start_charging(bi(idx_late(il),1):bi(idx_late(il),2)) + charging_time;
-                time_end_charging(bi(idx_late(il),1):bi(idx_late(il),2)) = time_end_charging(bi(idx_late(il),1):bi(idx_late(il),2)) + charging_time;
+        if charging_time > 1         % if charging time over 1 hour, consider late deploy        
+            if nSalesmen > numTarChargers
+                numLateDeploy = nSalesmen - numTarChargers;
+                % sort the mission time
+                [~,idx_late] = sort(mission_time,2);
+                idx_late = idx_late(1:numLateDeploy);
+                % change time start and finish charging
+                temp = cumsum(man_battery_count);
+
+                bi = [[1 temp(1:end-1)+1]' temp'];
+                for il = 1:numLateDeploy
+
+                    time_start_charging(bi(idx_late(il),1):bi(idx_late(il),2)) = time_start_charging(bi(idx_late(il),1):bi(idx_late(il),2)) + charging_time;
+                    time_end_charging(bi(idx_late(il),1):bi(idx_late(il),2)) = time_end_charging(bi(idx_late(il),1):bi(idx_late(il),2)) + charging_time;
+                end
+                mission_time(idx_late) = mission_time(idx_late) + charging_time;
             end
-            mission_time(idx_late) = mission_time(idx_late) + charging_time;
         end
         
         cell_mission_time{p} = mission_time;
@@ -307,6 +314,26 @@ for iter = 1:numIter
         total_ds(p) = sum(sum(time_charger));
         charger_location_ind_record{p} = charger_location_ind; % lifan added
         
+        %% Calculate shore stations constraints   shore_station_boundary_y
+        
+        
+        num_journey = ceil(num_chargering_period/nSalesmen); % 4        
+        list_num_charger_near_shore{p} = zeros(1,num_journey); %1x4        
+        charger_x = xy(charger_location{p},1); %13
+        charger_y = xy(charger_location{p},2); 
+        
+        for xy_i = 1:1:num_chargering_period %13       
+            nth_journey = ceil(xy_i/nSalesmen); % 1~4
+           
+            if charger_y(xy_i) < shore_station_boundary_y   % inside the shore station
+                
+                list_num_charger_near_shore{p}(nth_journey) = list_num_charger_near_shore{p}(nth_journey) +1;
+            end
+        end
+
+        num_UAS_not_visit_shore = sum(list_num_charger_near_shore{p} == 0);% how many journey, the UAS do not visit the shore
+
+        
         %% Calculate the speed limit constraint
         %         average_charging = mean(time_end_start);
         %         speed_limit_penalty(p) = alpha_ratio(4)*(sum(abs(time_end_start - sum(time_end_start)/length(time_end_start)))+ sum(abs(time_charger_travel - sum(time_charger_travel)/length(time_charger_travel)))); % vectorize to improve the speed
@@ -338,7 +365,9 @@ for iter = 1:numIter
         % normalize charger distance
 
         % fitness function
-        fun(p) = alpha_ratio(iter,1)*energy_cost(p) + alpha_ratio(iter,5)*speed_limit_penalty(p); 
+        % fun(p) = alpha_ratio(iter,1)*energy_cost(p) + alpha_ratio(iter,5)*speed_limit_penalty(p); 
+        fun(p) = alpha_ratio(iter,1)*energy_cost(p) + alpha_ratio(iter,5)*speed_limit_penalty(p) + num_UAS_not_visit_shore*5; 
+        
         %fun(p) = alpha_ratio(iter,1)*energy_cost(p); 
 %         + alpha_ratio(iter,4)*mean(time_charger_travel); 
         
@@ -376,6 +405,7 @@ for iter = 1:numIter
         min_charging_time_start = charging_time_start{index};
         min_charging_time_end = charging_time_end{index};
         min_nth_worker_record = nth_worker_record{index}; % lifan added
+        best_list_num_charger_near_shore = list_num_charger_near_shore{index}; % lifan added
         min_charger_location_ind_record = charger_location_ind_record{index};
         rng = [[1 optBreak+1];[optBreak n]]';
         if showProg
@@ -550,6 +580,8 @@ if nargout
         'charging_level', min_charging_level, ...
         'nth_worker_record', min_nth_worker_record, ... % lifan added nth UAV [2 1 3 1 2 3]
         'charger_location_ind_record', min_charger_location_ind_record, ... % lifan added nth ASV  charger decide color # 1
+        'shore_station_boundary_y', shore_station_boundary_y, ... % lifan added y boundary
+        'best_list_num_charger_near_shore', best_list_num_charger_near_shore, ...
         'battery_life_distance',   min_battery_life_distance);
         
     

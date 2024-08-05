@@ -187,7 +187,12 @@ count_p = 1;
 
 %plot([0.5,14.5,14.5,0.5,.5],[0.5,.5,14.5,14.5,.5],'k','LineWidth',3)  
 brown = [171 104 87]./255;
-plot([0.5,14.5,14.5,0.5,.5],[0.5,.5,2.5,2.5,.5],'Color',brown,'LineWidth',2) % shore stations covering border
+%shore_station_y_boundary = 3.5; % shore_station_boundary_y
+boundary_y = a.shore_station_boundary_y; 
+%plot([0.5,14.5,14.5,0.5,.5],[0.5,.5,2.5,2.5,.5],'Color',brown,'LineWidth',2) % shore stations covering border
+plot([0.5,14.5,14.5,0.5,.5],[0.5,.5,boundary_y,boundary_y,.5],'Color',brown,'LineWidth',2) % shore stations covering border
+
+
 
 % for ic = 1:numTarChargers
 %     for id = 1:NUm(ic)
@@ -196,7 +201,7 @@ plot([0.5,14.5,14.5,0.5,.5],[0.5,.5,2.5,2.5,.5],'Color',brown,'LineWidth',2) % s
 %         count_p = count_p +1;
 %     end
 % end
-
+UAS_travel_distance = zeros(1,numTarChargers);
 for ic = 1:numTarChargers
 
     
@@ -267,6 +272,18 @@ for ic = 1:numTarChargers
     
 %     plot([start_pCharger(1,1); a.xy(a.charging_location(charger_location_ind(ic,1):charger_location_ind(ic,2)),1)], ... 
 %          [start_pCharger(1,2); a.xy(a.charging_location(charger_location_ind(ic,1):charger_location_ind(ic,2)),2)],':x','LineWidth',2,'MarkerSize',15,'Color',clr(s+ic,:)) 
+
+    %%
+    UAS_travel_distance(ic) = 0
+    for i = 1:(length(charger_path_x) - 1)
+        % Calculate the distance between consecutive points
+        dist_between_2_points = sqrt((charger_path_x(i+1) - charger_path_x(i))^2 + (charger_path_y(i+1) - charger_path_y(i))^2);
+        % Accumulate the total distance
+        UAS_travel_distance(ic) = UAS_travel_distance(ic) + dist_between_2_points;
+    end
+    UAS_travel_distance
+
+
 
     %% save file
     % Create a file name using the current value of 'i'

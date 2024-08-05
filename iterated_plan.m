@@ -260,6 +260,7 @@ userConfig.numIter = 100;    %400*2;               % number of max iteration 202
 % userConfig.numIter = 1;                          % number of max iteration
 userConfig.nSalesmen= numWorker;                   % number of worker
 userConfig.numTarChargers = numCharger;            % number of charger
+userConfig.shore_station_boundary_y = 4.5          % shore station y boundry 
 userConfig.batteryLife = btl;
 userConfig.initial_battery_level = btl;   % 100% energy
 userConfig.charging_time = charging_period;
@@ -304,6 +305,8 @@ if 1 % "1" for single run, "0" for multiple runs using parallel computing
         record_max_distance(i) = a.minDist; % working robot distance
         record_a{i} = a;
         
+        a.best_list_num_charger_near_shore
+        
         fprintf('record_max_mission_time ( %d ) = %.1f record_max_distance = %.1f  \n', i, record_max_mission_time(i), record_max_distance(i)); % lifan add
     end
     
@@ -325,7 +328,7 @@ if 1 % "1" for single run, "0" for multiple runs using parallel computing
                    'numCharger', 'userConfig', 'start_point', 'start_pCharger', 'G', 'start_node_th', 'points_to_remove', 'charging_period');
     
     % Load data, after load data run 'preplan_plot_5_0' and then run 'plot_battery_v10'
-    %load('auv_mobile_charger_2024-01-17_162755.mat');
+    load('auv_mobile_charger_2024-08-04_044106');
 
     
     % Evaluate of the trajectories and get the timeline and plot
