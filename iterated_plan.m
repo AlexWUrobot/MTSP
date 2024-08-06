@@ -73,7 +73,11 @@ end
 ob = map.mission_location;
 
 %points_to_remove = [5 5; 5 6; 6 4; 7 4; 9 4; 10 4; 6 5; 7 5; 8 5; 9 5; 6 6; 7 6; 8 6; 7 7; 8 7; 9 6; 9 7; 9 8; 10 7];  % 
-points_to_remove = [];  % no obstacles
+%points_to_remove = [5 5; 5 6; 6 4; 7 4; 9 4; 10 4; 6 5; 7 5; 8 5; 9 5; 6 6; 7 6];  % 
+points_to_remove = [5 5; 5 6; 6 4; 7 4; 9 4; 10 4; 6 5; 7 5; 8 5; 9 5; 6 6; 7 6; 1 14; 1 13];  % 
+
+
+%points_to_remove = [];  % no obstacles
 
 
 % if there is obstacles, please remove the points from the mission points map
@@ -306,6 +310,7 @@ if 1 % "1" for single run, "0" for multiple runs using parallel computing
         record_a{i} = a;
         
         a.best_list_num_charger_near_shore
+        a.chosen_all_UAS_travel_distance
         
         fprintf('record_max_mission_time ( %d ) = %.1f record_max_distance = %.1f  \n', i, record_max_mission_time(i), record_max_distance(i)); % lifan add
     end
@@ -328,7 +333,7 @@ if 1 % "1" for single run, "0" for multiple runs using parallel computing
                    'numCharger', 'userConfig', 'start_point', 'start_pCharger', 'G', 'start_node_th', 'points_to_remove', 'charging_period');
     
     % Load data, after load data run 'preplan_plot_5_0' and then run 'plot_battery_v10'
-    load('auv_mobile_charger_2024-08-04_044106');
+    % load('auv_mobile_charger_2024-08-04_044106');
 
     
     % Evaluate of the trajectories and get the timeline and plot

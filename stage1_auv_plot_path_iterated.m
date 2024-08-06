@@ -274,7 +274,7 @@ for ic = 1:numTarChargers
 %          [start_pCharger(1,2); a.xy(a.charging_location(charger_location_ind(ic,1):charger_location_ind(ic,2)),2)],':x','LineWidth',2,'MarkerSize',15,'Color',clr(s+ic,:)) 
 
     %%
-    UAS_travel_distance(ic) = 0
+    UAS_travel_distance(ic) = 0;
     for i = 1:(length(charger_path_x) - 1)
         % Calculate the distance between consecutive points
         dist_between_2_points = sqrt((charger_path_x(i+1) - charger_path_x(i))^2 + (charger_path_y(i+1) - charger_path_y(i))^2);
@@ -305,7 +305,10 @@ brown = [171 104 87]./255;
 % scatter(points_to_remove(:,1),points_to_remove(:,2),'s','filled','MarkerSize',15,'Color',brown)
 
 if ~isempty(points_to_remove)   % if there is points or obstacle, print the triangle symbol
-    plot(points_to_remove(:,1),points_to_remove(:,2),'linestyle','none','marker','^','MarkerSize',15,'MarkerEdgeColor',brown, 'MarkerFaceColor',brown)
+    %plot(points_to_remove(:,1),points_to_remove(:,2),'linestyle','none','marker','^','MarkerSize',15,'MarkerEdgeColor',brown, 'MarkerFaceColor',brown)
+    black = [0 0 0];
+    plot(points_to_remove(:,1),points_to_remove(:,2),'linestyle','none','marker','X','MarkerSize',15,'MarkerEdgeColor',brown, 'MarkerFaceColor',black)
+
 end
 
 %%

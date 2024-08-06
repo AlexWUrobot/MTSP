@@ -116,7 +116,7 @@ time_given_charger = cell(popSize,1);
 nth_worker_record = cell(popSize,1); % lifan added
 charger_location_ind_record = cell(popSize,1); % lifan added
 list_num_charger_near_shore = cell(popSize,1); % lifan added
-
+all_UAS_travel_distance = cell(popSize,1); % lifan added
 
 % popRoute(1,:) = (1:n);
 % breakl = cumsum(ones(1,nSalesmen-1)*floor(n/nSalesmen));
@@ -332,6 +332,21 @@ for iter = 1:numIter
         end
 
         num_UAS_not_visit_shore = sum(list_num_charger_near_shore{p} == 0);% how many journey, the UAS do not visit the shore
+        
+        
+        %% Calculate the cost of every UAS travel distance 
+        
+        UAS_travel_distance = zeros(1,numTarChargers);
+        for ic = 1:numTarChargers
+            UAS_travel_distance(ic) = 0;
+            for i = 1:(length(charger_x) - 1)
+                % Calculate the distance between consecutive points
+                dist_between_2_points = sqrt((charger_x(i+1) - charger_x(i))^2 + (charger_y(i+1) - charger_y(i))^2);
+                % Accumulate the total distance
+                UAS_travel_distance(ic) = UAS_travel_distance(ic) + dist_between_2_points;
+            end
+        end
+        all_UAS_travel_distance{p} = sum(UAS_travel_distance);   % 106 
 
         
         %% Calculate the speed limit constraint
@@ -366,7 +381,7 @@ for iter = 1:numIter
 
         % fitness function
         % fun(p) = alpha_ratio(iter,1)*energy_cost(p) + alpha_ratio(iter,5)*speed_limit_penalty(p); 
-        fun(p) = alpha_ratio(iter,1)*energy_cost(p) + alpha_ratio(iter,5)*speed_limit_penalty(p) + num_UAS_not_visit_shore*5; 
+        fun(p) = alpha_ratio(iter,1)*energy_cost(p) + alpha_ratio(iter,5)*speed_limit_penalty(p) + 5*num_UAS_not_visit_shore + 0.2*all_UAS_travel_distance{p}; 
         
         %fun(p) = alpha_ratio(iter,1)*energy_cost(p); 
 %         + alpha_ratio(iter,4)*mean(time_charger_travel); 
@@ -406,6 +421,7 @@ for iter = 1:numIter
         min_charging_time_end = charging_time_end{index};
         min_nth_worker_record = nth_worker_record{index}; % lifan added
         best_list_num_charger_near_shore = list_num_charger_near_shore{index}; % lifan added
+        chosen_all_UAS_travel_distance = all_UAS_travel_distance{index}; % lifan added, you can choose the min 
         min_charger_location_ind_record = charger_location_ind_record{index};
         rng = [[1 optBreak+1];[optBreak n]]';
         if showProg
@@ -581,7 +597,8 @@ if nargout
         'nth_worker_record', min_nth_worker_record, ... % lifan added nth UAV [2 1 3 1 2 3]
         'charger_location_ind_record', min_charger_location_ind_record, ... % lifan added nth ASV  charger decide color # 1
         'shore_station_boundary_y', shore_station_boundary_y, ... % lifan added y boundary
-        'best_list_num_charger_near_shore', best_list_num_charger_near_shore, ...
+        'best_list_num_charger_near_shore', best_list_num_charger_near_shore, ... % lifan added 
+        'chosen_all_UAS_travel_distance', chosen_all_UAS_travel_distance, ... % lifan added 
         'battery_life_distance',   min_battery_life_distance);
         
     
